@@ -1,4 +1,4 @@
 package realtimemariadb;
 
-public class FileWatcher {
+public class Row {
 }
