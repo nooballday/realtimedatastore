@@ -15,14 +15,9 @@ public class MainChannel implements Channel {
     //Map<TableName, Set<Subscriptions>
     private final Map<String, Set<Subscription>> subscriptions = new HashMap<>();
 
-    private final JsonService jsonService;
 
-    private final WebSocketBroadcaster broadcaster;
+    public MainChannel() {}
 
-    public MainChannel(WebSocketBroadcaster broadcaster, JsonService jsonService) {
-        this.broadcaster = broadcaster;
-        this.jsonService = jsonService;
-    }
     @Override
     public void subscribe(Subscription subscription) {
         //register active subscription
@@ -45,6 +40,7 @@ public class MainChannel implements Channel {
         Set<Subscription> subscribed = subscriptions.get(dataEvent.getTableName());
         if (subscribed != null) {
             subscribed.forEach(s -> {
+                //send to each client
                 s.getWebsocketSession().sendSync(dataEvent);
             });
         }

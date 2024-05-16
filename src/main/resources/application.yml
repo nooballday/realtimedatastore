@@ -1,3 +1,13 @@
 micronaut:
   application:
     name: realtimemariadb
+
+datasources:
+  default:
+    url: jdbc:mariadb://localhost:3306/aschema
+    driverClassName: org.mariadb.jdbc.Driver
+    host: localhost
+    schema: aschema
+    username: test
+    password: test
+    dialect: MYSQL

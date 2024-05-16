@@ -12,9 +12,9 @@ public class DataEvent {
 
     String tableName;
 
-    List<Map> data;
+    List<Map<String, Object>> data;
 
-    public DataEvent(String tableName, List<Map> data) {
+    public DataEvent(String tableName, List<Map<String, Object>> data) {
         this.timestamp = System.currentTimeMillis();
         this.tableName = tableName;
         this.data = data;
@@ -29,18 +29,18 @@ public class DataEvent {
     }
 
     public String getTableName() {
-        return tableName;
+        return tableName.replaceAll("`", "");
     }
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
-    public List<Map> getData() {
+    public List<Map<String, Object>> getData() {
         return data;
     }
 
-    public void setData(List<Map> data) {
+    public void setData(List<Map<String, Object>> data) {
         this.data = data;
     }
 }

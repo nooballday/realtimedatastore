@@ -18,6 +18,12 @@ dependencies {
     implementation ("com.zendesk:mysql-binlog-connector-java:0.29.2")
     implementation("io.micronaut:micronaut-websocket")
     implementation("com.github.jsqlparser:jsqlparser:4.9")
+
+    implementation "org.mariadb.jdbc:mariadb-java-client:3.0.3" // MariaDB JDBC driver
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:3.2.5"
+
+    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
+
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.yaml:snakeyaml")
     testImplementation("io.micronaut:micronaut-http-client")

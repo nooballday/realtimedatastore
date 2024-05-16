@@ -9,7 +9,6 @@ import io.micronaut.websocket.annotation.ServerWebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ConcurrentHashMap;
 
 @ServerWebSocket("/channel/{userName}")
 public class WebSocketServer {
@@ -32,6 +31,7 @@ public class WebSocketServer {
     public void onMessage(String userName, String tableName, WebSocketSession session) {
         //every message that comes will be assumed as subscription
         Subscription subscription = new Subscription(session, tableName);
+        LOG.info(String.format("User %s subscribing on table %s", userName, tableName));
         mainChannel.subscribe(subscription);
     }
 

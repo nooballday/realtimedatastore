@@ -28,6 +28,6 @@ public class Application {
     static DatabaseListener databaseListener;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Micronaut.build(args).eagerInitConfiguration(true).eagerInitSingletons(true).mainClass(Application.class).start();
+        Micronaut.run(Application.class, args);
     }
 }

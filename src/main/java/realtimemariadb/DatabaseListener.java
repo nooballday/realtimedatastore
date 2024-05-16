@@ -22,11 +22,14 @@ import java.io.IOException;
 @Singleton
 public class DatabaseListener implements ApplicationEventListener<ServerStartupEvent> {
 
-
     private final MainChannel mainChannel;
+    private final DataRepository repository;
+    private final DatasourceConfig datasourceConfig;
 
-    public DatabaseListener(MainChannel mainChannel) {
+    public DatabaseListener(MainChannel mainChannel, DataRepository repository, DatasourceConfig datasourceConfig) {
         this.mainChannel = mainChannel;
+        this.repository = repository;
+        this.datasourceConfig = datasourceConfig;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseListener.class);
@@ -37,7 +40,13 @@ public class DatabaseListener implements ApplicationEventListener<ServerStartupE
     }
 
     public void listen() {
-        BinaryLogClient client = new BinaryLogClient("localhost", 3306, "test", "test");
+        BinaryLogClient client = new BinaryLogClient(
+                datasourceConfig.getHost(),
+                3306,
+                datasourceConfig.getSchema(),
+                datasourceConfig.getUsername(),
+                datasourceConfig.getPassword());
+
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
@@ -49,7 +58,7 @@ public class DatabaseListener implements ApplicationEventListener<ServerStartupE
                 if (event.getHeader().getEventType() == EventType.QUERY) {
                     QueryEventData queryEventData = event.getData();
 
-                    //parse the query from event
+                    // parse the query from event
                     Statement statement = null;
 
                     try {
@@ -59,7 +68,7 @@ public class DatabaseListener implements ApplicationEventListener<ServerStartupE
                         e.printStackTrace();
                     }
 
-                    //get query type so we can cast statement to the appropriate class
+                    // get query type so we can cast statement to the appropriate class
                     String queryType = statement.getClass().getSimpleName().toUpperCase();
                     String tableName = null;
 
@@ -80,9 +89,9 @@ public class DatabaseListener implements ApplicationEventListener<ServerStartupE
                             System.out.println(String.format("unsupported query to watch %s", queryType));
                     }
 
-                    //broadcast event
-                    DataEvent dataEvent = new DataEvent(tableName, null);
-                    System.out.println(String.format("Data changes on table %s", tableName));
+                    // broadcast event
+                    DataEvent dataEvent = new DataEvent(tableName, repository.fetchData(tableName));
+                    System.out.println(String.format("Data changes on table %s", dataEvent.getData()));
                     mainChannel.broadcast(dataEvent);
                 }
             }
